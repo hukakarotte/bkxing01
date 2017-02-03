@@ -148,6 +148,7 @@ class IndexController extends AppframeController {
        $model_category = M('category');
        
        $category_list=$model_category->where("is_show=1")->order("cat_order asc")->select();
+       
        if($category_list){
         $this->output_data("0000","获取分类列表成功",$category_list); 
        }else{
@@ -164,7 +165,28 @@ class IndexController extends AppframeController {
 //            $toPage=$_GET['toPage']?intval($_GET['toPage']):1;
        $catIds=$app_str['data']['cat_id']?intval($app_str['data']['cat_id']):1;
        $perPageSize=$app_str['data']['perPageSize']?intval($app_str['data']['perPageSize']):40;
-       $order=$app_str['data']['order']?$app_str['data']['order']:"last_update";
+       switch ($app_str['data']['order'])
+            {
+                default :
+                $order = "last_update";
+                    break;
+                case '1':
+                    $order = "last_update";
+                    break;
+                case '2':
+                    $order = "couponAmount";
+                    break;
+                case '3':
+                    $order = "biz30day";
+                    break;
+                case '4':
+                    $order = "out_rate";
+                    break;
+                case '5':
+                    $order = "out_CommFee";
+                    break;
+            }
+       
        $sort=$app_str['data']['sort']?$app_str['data']['sort']:"desc";
        
        $where=" is_show=1 ";
@@ -180,8 +202,23 @@ class IndexController extends AppframeController {
        }
        
        $model_goods = M('goods');
+       $model_membergoods = M('membergoods');
+       $model_member = M('member');
+       $member_info=$model_member->where(array("token"=>$app_str['token']))->find();
+//       print_r($member_info);die();
+//       $goods_list=$model_goods->alias("a")->join("cmf_membergoods b on b.auctionId =a.auctionId","LEFT")->field('a.*,b.item_id')->where($where)->order($order)->limit($limit)->select();
        
        $goods_list=$model_goods->where($where)->order($order)->limit($limit)->select();
+       
+       if($goods_list){
+            foreach ($goods_list as $k1=>$v1){
+                    $member_goods=$model_membergoods->where(array("member_id"=>$member_info['id'],"auctionId"=>$v1['auctionId']))->find();
+                    if($member_goods){
+                        $goods_list[$k1]['member_goods']=$member_goods;
+                    }
+                    unset($member_goods);
+            }
+       }
        if($goods_list){
              $this->output_data("0000","获取商品列表成功",$goods_list); 
        }else{
@@ -189,6 +226,9 @@ class IndexController extends AppframeController {
        }
         
     }
+    
+    
+    
     //检查token
     private function check_token($app_str){
          if($app_str['token']){
