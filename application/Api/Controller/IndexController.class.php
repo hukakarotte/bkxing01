@@ -27,6 +27,7 @@ namespace Api\Controller;
 
 use Common\Controller\AppframeController;
 
+
 /**
  * 首页
  */
@@ -86,6 +87,10 @@ class IndexController extends AppframeController {
                     elseif($app_str['busiid']=='A0012'){         //注册
                        
                         $this->register($app_str);
+                    }
+                    elseif($app_str['busiid']=='A0013'){         //查券
+                       
+                        $this->get_coupon($app_str);
                     }
 //                    elseif($app_str['busiid']=='A0008'){         //检查淘宝账号
 //                       
@@ -279,6 +284,7 @@ class IndexController extends AppframeController {
             "zkPrice"=>$app_str['data']['zkPrice'],//商品价格
             "biz30day"=>$app_str['data']['biz30day'],//销量
             "auctionUrl"=>$app_str['data']['auctionUrl'],//商品链接
+            "sellerId"=>$app_str['data']['sellerId'],//商品链接
             "couponLeftCount"=>$app_str['data']['couponLeftCount'],//剩余优惠券
             "couponTotalCount"=>$app_str['data']['couponTotalCount'],//总优惠券
             "couponLink"=>$app_str['data']['couponLink'],//优惠券链接
@@ -719,7 +725,70 @@ class IndexController extends AppframeController {
             $this->output_data("0010","入参参数无法找到");
         }
     }
+    private function get_coupon($app_str){
+        $this->check_token($app_str);
+        
+        $sellerId=$app_str['data']['sellerId'];
+        $auctionId=$app_str['data']['auctionId'];
+       
+        $get_coupon=file_get_contents("http://zhushou3.taokezhushou.com/api/v1/coupons_base/".$sellerId."?item_id=".$auctionId);
+        $get_coupon_list=json_decode($get_coupon,true);
+        $out_list=array();
+       
+        if($get_coupon_list['data']){
+            foreach ($get_coupon_list['data'] as $k=>$v){
+                $cateUrl='http://shop.m.taobao.com/shop/coupon.htm?seller_id='.$sellerId.'&activity_id='.$v["activity_id"];
+                $cateCon=$this->curl_get_file_contents($cateUrl);
+                preg_match('(<div class="coupon-info">.*?<.*?div>)ims',$cateCon,$arr1);
+                $arr2=strip_tags($cateCon);
+                $out_list[$k]['couponAmount']=$this->getNeedBetween($arr1[0],'<dt>','元优惠券</dt>');
+                $out_list[$k]['couponTotalCount']=$this->getNeedBetween($arr1[0],'"rest">','</span>')+$this->getNeedBetween($arr1[0],'"count">','</span>');
+                $out_list[$k]['couponLeftCount']=$this->getNeedBetween($arr1[0],'"rest">','</span>');
+                $out_list[$k]['couponEffectiveStartTime']=strtotime($this->getNeedBetween($arr1[0],'有效期:','至'));
+                $out_list[$k]['couponEffectiveEndTime']=strtotime($this->getNeedBetween($arr1[0],'至','</dd>'));
+                $out_list[$k]['couponInfo']=$this->trimall($this->getNeedBetween($arr2,'张）','有效期'));
+                $out_list[$k]['couponActivityId']=$v['activity_id'];
+                unset($arr1);
+                unset($arr2);
+                unset($cateCon);
+            }
+             $this->output_data("0000","获取优惠券列表成功",array("itemlist"=>$out_list));
+//            print_r($out_list);
+        }else{
+            $this->output_data("0010","目前没有多余优惠券");
+        }
+        
+        
+       
+        
+    }
+ private   function trimall($str)//删除空格
+{
+    $qian=array(" ","　","\t","\n","\r");$hou=array("","","","","");
+    return str_replace($qian,$hou,$str);    
+}
+    private function getNeedBetween($str, $leftStr, $rightStr){//字符串截取函数
+        
+          $left = strpos($str, $leftStr);
+        //echo '左边:'.$left;
+        $right = strpos($str, $rightStr,$left);
+        //echo '<br>右边:'.$right;
+        if($left < 0 or $right < $left) return '';
+        return substr($str, $left + strlen($leftStr), $right-$left-strlen($leftStr));
+        }
    
+    private function curl_get_file_contents($URL) 
+    { 
+    $c = curl_init(); 
+    curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); 
+    //curl_setopt($c, CURLOPT_HEADER, 1);//输出远程服务器的header信息 
+    curl_setopt($c, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.2) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.2.149.27 Safari/525.13'); 
+    curl_setopt($c, CURLOPT_URL, $URL); 
+    $contents = curl_exec($c); 
+    curl_close($c); 
+    if ($contents) {return $contents;} 
+    else {return FALSE;} 
+    } 
     private function _get_token($user_login) {
         $model_member = M('member');
 
