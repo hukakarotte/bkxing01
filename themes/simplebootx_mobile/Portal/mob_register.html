@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html lang="zh"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>橙可优品-为淘客而生的移动APP！</title>
+    <link href="__TMPL__Public/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__TMPL__Public/css/taogou-min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="/public/asset/lib/html5shiv.js"></script>
+    <script src="/public/asset/lib/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .signin{padding-top: 8px;}
+        .tbk-row{max-width: 100%; }
+        body{padding-top: 0;}
+    </style>
+</head>
+<body id="regist-v2" class="has-footer">
+<div style="text-align:center;">
+    <img class="tbk-row" src="__TMPL__Public/images/register-head.png">
+    <!-- 没有分享人时，下面两个元素不展示，没有60元优惠券 -->
+        <img class="tbk-row" src="__TMPL__Public/images/register-coupon.png">
+    <div style="text-align:center;color:#ef8203;margin-top:5px;"><span>您的好友 186****3833 邀您注册领取充值优惠券</span></div>
+    </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="signin">
+            <form class="form-signin form-horizontal J_acXHRForm" role="form" method="post">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input type="text" name="phoneNum" id="mobile" class="form-control ac-form-item phoneNum" required="" placeholder="输入您的手机号">
+                    </div>
+                    <div class="need-verify"></div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input type="text" id="input_verify" class="form-control ac-form-item verify" name="verify" placeholder="验证码" style="width:180px;display:inline-block">
+                        <span style="display:inline-block">{:sp_verifycode_img('length=4&font_size=14&width=100&height=34&charset=1234567890&use_noise=0&use_curve=0')}</span>
+						
+					  </div>
+                    <div class="need-verify"></div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input type="text" name="verifyCode" class="form-control ac-form-item messageCode" required="" placeholder="输入短信验证码" style="width:60%;display: inline-block;">
+                        <input type="button" value="获取验证码" id="btn" class="btn btn-warning getMessageCode color-orange">
+                    </div>
+                    <div class="need-verify"></div>
+                </div>
+               
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input type="password" name="password" class="form-control ac-form-item password" required="" placeholder="设置6-14位密码">
+                    </div>
+                    <div class="need-verify"></div>
+                </div>
+<!--                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input type="password" name="reLoginPwd" class="form-control re-password" required="" placeholder="再次输入密码">
+                    </div>
+                    <div class="need-verify"></div>
+                </div>-->
+                
+                <a class="btn btn-warning btn-block color-orange" id="submit" >注册免费体验</a>
+                <div class="alert alert-danger col-sm-12 errorMsg" style="display:none"></div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<script src="__TMPL__Public/js/jquery.min.js"></script>
+<script src="__TMPL__Public/js/bootstrap.min.js"></script>
+<script>
+   
+    $(document).ready(function() {
+            
+            $("#submit").click(function(){
+                var phone=$("#mobile").val();
+                var code=$(".messageCode").val();
+                var pass=$(".password").val();
+                var up="";
+                 $.ajax({
+                url:"/index.php?g=Api",
+                type:"post",
+                dataType:"json",
+                async: false,
+                data:{app_str:'{"busiid": "A0012","data":{"phone":"'+phone+'","code":"'+code+'","pass":"'+pass+'","up":"'+up+'"}}'},
+                success:function (result){
+                    alert(result.msg);
+                    
+                     }
+                });
+            });
+            
+            
+            $(".getMessageCode").click(function(){
+                if(checkSubmitMobil()){
+                var verify = $(".verify").val();
+                 var phoneval=$("#mobile").val();
+                $.ajax({
+                url:"/index.php?g=Api&m=index&a=checkcode",
+                type:"post",
+                dataType:"json",
+                async: false,
+                data:{verify:verify},
+                success:function (result){
+//                    console.log(result);
+                    if(result.rspcode=="0000"){
+                        
+                        $(".verify_img").click();//重新生成图片验证码
+//                        开始计时并禁用按钮
+                         var step = 59;
+                        $('#btn').val('重新发送60');
+                        $("#btn").attr("disabled", true);//设置disabled属性
+                         var _res = setInterval(function()
+                               {   
+                                   $('#btn').val('重新发送('+step+')');
+                                   step-=1;
+                                   if(step <= 0){
+                                   $("#btn").removeAttr("disabled"); //移除disabled属性
+                                   $('#btn').val('获取验证码');
+                                   clearInterval(_res);//清除setInterval
+                                   }
+                               },1000);
+//                            发送短信   
+                       
+                        
+                         $.ajax({
+                            url:"/index.php?g=Api",
+                            type:"post",
+                            dataType:"json",
+                            async: false,
+                            data:{app_str:'{"busiid": "A0011","data":{"phone":"'+phoneval+'"}}'},
+                            success:function (result){ 
+                                
+                                if(result.rspcode=="0010"){
+                                    alert(result.msg);
+                                }
+                            }  
+                        });
+                        
+    	            } else{
+                        alert('请输入正确的图形验证码'); return false; 
+                    }
+                }
+            });       
+        }
+            });
+    });
+    function checkSubmitMobil() { 
+        if ($("#mobile").val() == "") { 
+        alert("手机号码不能为空！"); 
+        //$("#moileMsg").html("<font color='red'>手机号码不能为空！</font>"); 
+        $("#mobile").focus(); 
+        return false; 
+        } 
+
+        if (!$("#mobile").val().match(/^(((13[0-9]{1})|159|153)+\d{8})$/)) { 
+        alert("手机号码格式不正确！"); 
+        //$("#moileMsg").html("<font color='red'>手机号码格式不正确！请重新输入！</font>"); 
+        $("#mobile").focus(); 
+        return false; 
+        } 
+        return true; 
+      } 
+  
+   
+//    var config = {
+//        getMessageCode: "/web/register/verifyCode",
+//        register: "/web/register/submit",
+//        redirectApi:'/web/register/finish'
+//    }
+</script>
+
+<!--<script src="__TMPL__Public/js/taogou-min.js"></script>-->
+<div class="J_XHRDom"></div>
+<div class="alert ac-alert alert-danger"><button type="button" class="close">×</button><h4 class="tit"></h4><p class="msg"></p>
+</div>
+<!--<div style="display:none;">
+<script src="./百客行-首款为淘客而生的移动APP！_files/z_stat.php" language="JavaScript"></script><script src="./百客行-首款为淘客而生的移动APP！_files/core.php" charset="utf-8" type="text/javascript"></script><a href="http://www.cnzz.com/stat/website.php?web_id=1261117573" target="_blank" title="站长统计">站长统计</a>
+</div>-->
+
+</body></html>

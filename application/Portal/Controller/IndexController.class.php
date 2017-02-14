@@ -32,11 +32,17 @@ class IndexController extends HomebaseController {
 	
     //首页 小夏是老猫除外最帅的男人了
 	public function index() {
-           
+          
     	$this->display(":index");
     }
-    public function index1() {
-            echo"asd";
+    public function mob_register() {
+            $member_mod=M("member");
+            $high_up=$_GET['high_up'];
+            $agent=$_GET['agent'];
+            
+            $this->assign("high_up",$high_up);
+            
+           $this->display(":mob_register");
     
     }
 }

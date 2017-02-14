@@ -38,36 +38,7 @@ class IndexController extends AppframeController {
             if($_POST['app_str']){
 //                print_r($_POST);
                 $app_str=  json_decode($_POST['app_str'],true);
-//                $array=array(
-//                        "busiid"=>"",
-//                        "data"=>array(
-//                    "auctionId"=>"544366951856",//商品ID("需要")
-//                    "title"=>"婴儿背心纯棉宝宝内衣打底男女童春夏秋装新生儿吊带彩棉儿童背心",//标题("需要")
-//                    "pictUrl"=>"http://image.taobao.com/bao/uploaded/i7/TB1FMl3PXXXXXaYaFXXYXGcGpXX_M2.SS2",//商品图片链接("需要")
-//                    "zkPrice"=>"39.80",//商品价格("需要")
-//                    "biz30day"=>"2719",//销量("需要")
-//                    "auctionUrl"=>"http://item.taobao.com/item.htm?id=544366951856",//销量("需要")
-//                    "couponLeftCount"=>"12535",//剩余优惠券("需要")
-//                    "couponTotalCount"=>"20000",//总优惠券("需要")
-//                    "couponLink"=>"https://taoquan.taobao.com/coupon/unify_apply.htm?sellerId=2070952103&activityId=33513c734b244ae19a2d02d5e45455b6",//优惠券链接("有则传")
-//                    "couponAmount"=>"20",//优惠券金额("需要")
-//                    "couponInfo"=>"满39元减20元",//优惠券信息("需要")
-//                    "couponEffectiveStartTime"=>"1486512000",//优惠券开始时间("需要")
-//                    "couponStartFee"=>"1487030400",//优惠券满使用金额("有则传")
-//                    "couponEffectiveEndTime"=>"",//优惠券结束时间("需要")
-//                    "taoToken"=>"￥XSUDiFwpIH￥",//淘口令("需要")
-//                    "clickUrl"=>"https://uland.taobao.com/coupon/edetail?activityId=33513c734b244ae19a2d02d5e45455b6&itemId=544366951856&pid=mm_54625351_20776494_70386013&dx=1",//长链接("需要")
-//                    "type"=>"auction",//推广位类型("有则传")
-//                    "shortLinkUrl"=>"https:\\s.click.taobao.com\oc7599x",//短链接("需要")
-//                    "out_type"=>"2",//输出佣金类型:1.通用。2。定向。3鹊桥("需要")
-//                    "out_rate"=>"3.5",//输出佣金比率("需要")
-//                    "out_CommFee"=>"1.39",//输出佣金价格("需要")
-//                    "goods_id"=>"46854",//内部商品ID("需要")
-//                ),
-//                    "token"=>"11f8c356ead0a41c26e36cb04436bde9"
-//                         );
-//                 print_r(json_encode($array));
-//                print_r(json_encode(array("data"=>"1","asd"=>array("asd"=>"asd"))));
+
                 
             
                     if($app_str['busiid']=='A0001'){          //登陆
@@ -107,6 +78,14 @@ class IndexController extends AppframeController {
                     elseif($app_str['busiid']=='A0010'){         //获取商品转换链接
                        
                         $this->turn_result($app_str);
+                    }
+                    elseif($app_str['busiid']=='A0011'){         //获取手机验证码
+                       
+                        $this->get_phonecod($app_str);
+                    }
+                    elseif($app_str['busiid']=='A0012'){         //注册
+                       
+                        $this->register($app_str);
                     }
 //                    elseif($app_str['busiid']=='A0008'){         //检查淘宝账号
 //                       
@@ -166,24 +145,7 @@ class IndexController extends AppframeController {
        }
     }
     
-//    private function check_tbuser($app_str){
-//        $this->check_token($app_str);
-//        if($app_str['data']['tb_user']){
-//            
-//            $model_member = M('member');
-//            $member_info=$model_member->where(array("token"=>$app_str['token']))->find();
-//            if($member_info['tb_user']){
-//                
-//            }else{
-//                
-//            }
-//            
-//        }else{
-//            
-//        }
-//        
-//        
-//    }
+
 
 
     private function add_tbuser($app_str){
@@ -287,7 +249,7 @@ class IndexController extends AppframeController {
        
        if($goods_list){
             foreach ($goods_list as $k1=>$v1){
-                    $member_goods=$model_membergoods->where(array("member_id"=>$member_info['id'],"goods_id"=>$v1['goods_id']))->find();
+                    $member_goods=$model_membergoods->where(array("member_id"=>$member_info['id'],"auctionId"=>$v1['auctionId']))->find();
                     if($member_goods){
                         $goods_list[$k1]['member_goods']['item_id']=$member_goods['item_id'];
                     }
@@ -340,16 +302,22 @@ class IndexController extends AppframeController {
             "member_id"=>$member_info["id"],//用户ID
             "last_update"=>time(),//用户ID
         );
-                    if(!$model_membergoods->where(array('goods_id'=>$app_str['data']['goods_id'],"member_id"=>$member_info["id"]))->select()){
+                    if(!$model_membergoods->where(array('auctionId'=>$app_str['data']['auctionId'],"member_id"=>$member_info["id"]))->select()){
                                                       // add
                               $insert_data['add_time']=time();
                               if($model_membergoods->add($insert_data)){
-                                  $this->output_data("0010","发布成功"); 
+                                  $this->output_data("0000","发布成功"); 
                               }else{
                                    $this->output_data("0010","发布失败"); 
                               }
                          }else{
-                                   $this->output_data("0010","发布失败,商品库已存在该商品"); 
+                             
+                          $updategoods=$model_membergoods->where("auctionId=".$app_str['data']['auctionId']." and member_id=".$member_info["id"])->save($insert_data);
+                          if($updategoods){
+                              $this->output_data("0000","发布成功"); 
+                          }else{
+                                   $this->output_data("0010","发布失败,入库失败"); 
+                          }
                               }
        
         
@@ -554,9 +522,175 @@ class IndexController extends AppframeController {
         }
     }
     
+    private function register($app_str){
+        $phonecod_mod=M("phonecod");
+        $member_mod=M("member");
+        $code=$app_str['data']['code'];
+        $phonenumber=$app_str['data']['phone'];
+        $pass=$app_str['data']['pass'];
+        $up=$app_str['data']['up'];
+        $time=time()-1800;//30分钟时效
+        $up_info=$member_mod->where("spreading_code='$up'")->find();
+        if($up_info){
+                $up_level=$up_info['user_login'];
+            if($up_info['id_totalagent']==1){
+               $up_totalagent=$up_info['user_login'];
+            }else{
+                 $up_totalagent=$up_info['up_totalagent'];
+            }
+        }else{
+            $up_level="test";
+            $up_totalagent="test";
+        }
+        
+        $this->get_pwd_strength($pass);
+        if(!$phonenumber){
+            $this->output_data("0010","请输入手机号");
+        }
+        if(!preg_match("/^1[34578]{1}\d{9}$/",$phonenumber)){  
+           $this->output_data("0010","手机号格式不正确");
+        }
+        if($member_mod->where("user_login='$phonenumber'")->find()){
+            $this->output_data("0010","用户已存在");
+        }
+       
+        if($phonecod_mod->where("phone='$phonenumber' and code='$code' and update_time>$time and type=1")->find()){
+            $data=array(
+                "user_login"=>$phonenumber,
+                "user_pass"=>md5($pass),
+                "end_time"=>time()+3600*24*3,//3天的试用期
+                "creat_time"=>time(),
+                "user_status"=>1,
+                "up_level"=>$up_level,//上级
+                "up_totalagent"=>$up_totalagent,//上级总代
+                "spreading_code"=> md5($phonenumber . strval(time()) . strval(rand(0,999999)))
+            );
+            if($member_mod->add($data)){
+                $this->output_data("0000","注册成功");
+            }else{
+                $this->output_data("0010","注册失败，通讯故障");
+            }
+            
+        }else{
+            $this->output_data("0010","请输入正确的手机验证码，或者验证码已经失效");
+        }
+        
+        
+    }
+    private function get_pwd_strength($pwd){  
+        if (strlen($pwd)>30 || strlen($pwd)<6)  
+        {  
+            $this->output_data("0010","密码必须为6-30位的字符串");
+            return "密码必须为6-30位的字符串";  
+        }  
+
+//        if(preg_match("/^\d*$/",$pwd))  
+//        {  
+//            $this->output_data("0010","密码必须包含字母");
+//            return "密码必须包含字母,强度:弱";//全数字  
+//        }  
+//
+//        if(preg_match("/^[a-z]*$/i",$pwd))  
+//        {  
+//            $this->output_data("0010","密码必须包含数字");
+//            return "密码必须包含数字,强度:中";//全字母      
+//        }  
+//
+//        if(!preg_match("/^[a-z\d]*$/i",$pwd))  
+//        {  
+//            $this->output_data("0010","密码只能包含数字和字母");
+//            return "密码只能包含数字和字母,强度:强";//有数字有字母  ";  
+//        }  
+  
+    }  
     
+    private function get_phonecod($app_str){
+        
+        $phonecod_mod=M("phonecod");
+        $phone=$app_str['data']['phone'];
+       
+        if($phone==""){
+            $this->output_data("0010","手机号不能为空");
+        }
+        
+        $cod=$this->generate_code();
+        $content="【橙可优品】验证码".$cod."。请在30分钟内完成注册，如非本人操作，请忽略 。";
+        
+        $array=$this->send_sms($phone, $content);
+        $phone_mod=M("phonecod");
+        
+        if($array["code"]==0){
+            $data_array=array(
+                "phone"=>$phone,
+                "code"=>$cod,
+                "type"=>"1",
+                "update_time"=>time()
+            );
+            if($phone_mod->where("phone=".$phone)->find()){
+                
+                $updat=$phone_mod->where("phone=".$phone)->save($data_array);
+                if($updat){
+                    $this->output_data("0000","通讯成功"); 
+                }else{
+                    $this->output_data("0010","通讯更新失败");
+                }
+                
+            }else{
+                $insert_da=$phone_mod->add($data_array);
+                if($insert_da){
+                      $this->output_data("0000","通讯成功"); 
+                }else{
+                    $this->output_data("0010","通讯更新失败");
+                }
+            }
+        }else{
+            $this->output_data("0010","通讯失败",$array);
+        }
+    }
     
-    //检查token
+   private function generate_code($length = 6) {
+       
+    return rand(pow(10,($length-1)), pow(10,$length)-1);
+}
+
+    private function send_sms($moblie,$content){
+        header("Content-Type:text/html;charset=utf-8");
+        $apikey = "2b217e1b004a52f713889742d6a8cf49"; //修改为您的apikey(https://www.yunpian.com)登录官网后获取
+        $mobile = $moblie; //请用自己的手机号代替
+        $text=$content;
+//        print_r($text);
+        $ch = curl_init();
+
+        /* 设置验证方式 */
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept:text/plain;charset=utf-8', 'Content-Type:application/x-www-form-urlencoded','charset=utf-8'));
+
+        /* 设置返回结果为流 */
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        /* 设置超时时间*/
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+        /* 设置通信方式 */
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      
+        // 发送短信
+        $data=array('text'=>$text,'apikey'=>$apikey,'mobile'=>$mobile);
+        $json_data = $this->send($ch,$data);
+        $array = json_decode($json_data,true);
+        
+//        echo '<pre>';print_r($array); 
+       
+        curl_close($ch);
+        return $array;
+    }
+    private function send($ch,$data){
+        curl_setopt ($ch, CURLOPT_URL, 'https://sms.yunpian.com/v2/sms/single_send.json');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        return curl_exec($ch);
+    }
+        //检查token
     private function check_token($app_str){
          if($app_str['token']){
               
@@ -612,6 +746,18 @@ class IndexController extends AppframeController {
             return null;
         }
 
+    }
+    public function checkcode(){
+        if(IS_POST){
+			if(!sp_check_verify_code()){
+				$this->output_data("0010","请输入正确的验证码");
+			}else{
+				
+				$this->output_data("0000","验证码正确");
+			}
+			
+		}
+    
     }
 }
 
