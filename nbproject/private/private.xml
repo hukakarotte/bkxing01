@@ -10,27 +10,34 @@
             <file>file:/E:/bkxing/bkxing01/application/User/Controller/LoginController.class.php</file>
             <file>file:/E:/bkxing/bkxing01/application/Api/Controller/IndexController.class.php</file>
             <file>file:/E:/bkxing/bkxing01/themes/simplebootx/Public/css/taogou-min.css</file>
+            <file>file:/E:/bkxing/bkxing01/application/Api/Controller/simple_html_dom.php</file>
+            <file>file:/E:/bkxing/bkxing01/payment/wappay/pay.php</file>
             <file>file:/E:/bkxing/bkxing01/admin/themes/simplebootx/Admin/login.html</file>
             <file>file:/E:/bkxing/bkxing01/admin/themes/simplebootx/Appadmin/member_index.html</file>
             <file>file:/E:/bkxing/bkxing01/application/Common/Common/function.php</file>
             <file>file:/E:/bkxing/bkxing01/application/User/Controller/IndexadminController.class.php</file>
             <file>file:/E:/bkxing/bkxing01/themes/simplebootx_mobile/Public/js/taogou-min.js</file>
             <file>file:/E:/bkxing/bkxing01/application/Portal/Controller/AdminPostController.class.php</file>
-            <file>file:/E:/bkxing/bkxing01/application/Portal/Controller/IndexController.class.php</file>
+            <file>file:/E:/bkxing/bkxing01/payment/config.php</file>
             <file>file:/E:/bkxing/bkxing01/public/yunpian/lib/HttpClient.php</file>
-            <file>file:/E:/bkxing/bkxing01/index.php</file>
+            <file>file:/E:/bkxing/bkxing01/application/Portal/Controller/IndexController.class.php</file>
+            <file>file:/E:/bkxing/bkxing01/payment/index.php</file>
             <file>file:/E:/bkxing/bkxing01/themes/simplebootx_mobile/Portal/mob_register.html</file>
+            <file>file:/E:/bkxing/bkxing01/index.php</file>
+            <file>file:/E:/bkxing/bkxing01/themes/simplebootx_mobile/Portal/payindex.html</file>
             <file>file:/E:/bkxing/bkxing01/admin/themes/simplebootx/Portal/AdminPost/index.html</file>
             <file>file:/E:/bkxing/bkxing01/application/Appadmin/Controller/MemberadminController.class.php</file>
             <file>file:/E:/bkxing/bkxing01/application/Admin/Controller/PublicController.class.php</file>
             <file>file:/E:/bkxing/bkxing01/test.php</file>
             <file>file:/E:/bkxing/bkxing01/themes/simplebootx/User/forgot_password.html</file>
             <file>file:/E:/bkxing/bkxing01/test.html</file>
+            <file>file:/E:/bkxing/bkxing01/themes/simplebootx_mobile/Portal/download.html</file>
             <file>file:/E:/bkxing/bkxing01/application/Common/Controller/HomebaseController.class.php</file>
             <file>file:/E:/bkxing/bkxing01/admin/themes/simplebootx/Appadmin/goodsindex.html</file>
             <file>file:/E:/bkxing/bkxing01/application/Api/Controller/CheckcodeController.class.php</file>
             <file>file:/E:/bkxing/bkxing01/application/Appadmin/Controller/GoodsadminController.class.php</file>
             <file>file:/E:/bkxing/bkxing01/simplewind/Core/Library/Think/Verify.class.php</file>
+            <file>file:/E:/bkxing/bkxing01/application/Portal/Controller/Payment.class.php</file>
             <file>file:/E:/bkxing/bkxing01/application/Common/Controller/AppframeController.class.php</file>
             <file>file:/E:/bkxing/bkxing01/admin/themes/simplebootx/User/index.html</file>
         </group>

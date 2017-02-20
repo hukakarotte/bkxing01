@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html lang="zh"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>橙可优品-为淘客而生的移动APP！</title>
+    <link href="__TMPL__Public/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__TMPL__Public/css/taogou-min.css" rel="stylesheet">
+    <script src="__TMPL__Public/js/jquery.min.js"></script>
+    <script src="__TMPL__Public/js/bootstrap.min.js"></script>
+   
+    <style>
+        body{ padding-top:0;}
+    </style>
+</head>
+
+
+    <body id="pay" class="has-footer">
+<style>
+    .signin{padding-top: 18px;}
+    .tbk-row{max-width: 100%; }
+</style>
+<div style="text-align:center;">
+   <img class="tbk-row" src="__TMPL__Public/images/register-head.png">
+</div>
+<div class="container-fluid" style="padding-top:18px;">
+    <form class="form-signin form-horizontal J_acXHRForm" id="goform" role="form" action="/index.php?g=Portal&m=index&a=payment"  method="post">
+        <div class="table-responsive">
+            <table class="table table-striped agent-table">
+                <tbody>
+                <tr class="form-item">
+                    <td>账 号</td>
+                    <td style="padding:0;">
+                        <input type="text" name="phoneNum" class="form-control ac-form-item phoneNum" placeholder="输入充值账号（手机号）" style="border:0;height:36px;padding:0 8px;" value="{$tel}">
+                        <div class="need-verify" data-pass="true"></div>
+                    </td>
+                </tr>
+                <!--tr>
+                    <td>推荐人</td>
+                    <td style="padding:0;"><input type="text" name="recommendUser" class="form-control ac-form-item phoneNum" placeholder="输入推荐人的手机号（选填）" style="border:0;height:36px;padding:0 8px;"></td>
+                </tr-->
+                <tr>
+                    <td>类 型</td>
+                    <td>年费会员</td>
+                </tr>
+                <tr>
+                    <td>有效期</td>
+                    <td>365天</td>
+                </tr>
+                <tr>
+                    <td>价格</td>
+                    <td><span class="text-danger">305</span>元</td>
+                </tr>
+                <!--tr>
+                    <td>优惠券</td>
+                    <td>0元</td>
+                </tr-->
+                <tr>
+                    <td>应付</td>
+                                        <td><span class="text-danger">365</span>元</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="text text-center" style="margin-bottom:6px;color:#ef8203;">请确认充值账号正确！</div>
+        <a id="go_topay" class="btn btn-warning btn-block color-orange" href="javascript:;">支付宝付款</a>
+        <div class="alert alert-danger col-sm-12 errorMsg" style="margin-top:6px;display:none"></div>
+    </form>
+</div>
+
+<script>
+//    var config = {
+//        payApi: "/web/pay/submit"
+//    }
+$("#go_topay").click(function(){
+    var phone=$(".phoneNum").val();
+    $.ajax({
+                url:"/index.php?g=Api",
+                type:"post",
+                dataType:"json",
+                async: false,
+                data:{app_str:'{"busiid": "A0015","data":{"phone":"'+phone+'"}}'},
+                success:function (result){
+                    if(result.rspcode=="0000"){
+                        $("#goform").submit();
+                    }else{
+                        alert(result.msg);
+                    }
+                    
+                     }
+                });
+    
+});
+
+</script>
+
+
+<div class="J_XHRDom"></div><div class="alert ac-alert alert-danger"><button type="button" class="close">×</button><h4 class="tit"></h4><p class="msg"></p></div>
+
+</body></html>

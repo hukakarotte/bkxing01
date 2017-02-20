@@ -7,10 +7,7 @@
     <title>橙可优品-为淘客而生的移动APP！</title>
     <link href="__TMPL__Public/css/bootstrap.min.css" rel="stylesheet">
     <link href="__TMPL__Public/css/taogou-min.css" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="/public/asset/lib/html5shiv.js"></script>
-    <script src="/public/asset/lib/respond.min.js"></script>
-    <![endif]-->
+   
     <style>
         .signin{padding-top: 8px;}
         .tbk-row{max-width: 100%; }
@@ -22,7 +19,7 @@
     <img class="tbk-row" src="__TMPL__Public/images/register-head.png">
     <!-- 没有分享人时，下面两个元素不展示，没有60元优惠券 -->
         <img class="tbk-row" src="__TMPL__Public/images/register-coupon.png">
-    <div style="text-align:center;color:#ef8203;margin-top:5px;"><span>您的好友 186****3833 邀您注册领取充值优惠券</span></div>
+    <div style="text-align:center;color:#ef8203;margin-top:5px;"><span>您的好友 {$member_info.user_login} 邀您注册领取充值优惠券</span></div>
     </div>
 <div class="container-fluid">
     <div class="row">
@@ -88,7 +85,11 @@
                 async: false,
                 data:{app_str:'{"busiid": "A0012","data":{"phone":"'+phone+'","code":"'+code+'","pass":"'+pass+'","up":"'+up+'"}}'},
                 success:function (result){
-                    alert(result.msg);
+                    if(result.rspcode=="0000"){
+                        location.href="/index.php?g=Portal&m=index&a=download&sign="+result.data.sign;
+                    }else{
+                        alert(result.msg);
+                    }
                     
                      }
                 });
@@ -157,7 +158,7 @@
         return false; 
         } 
 
-        if (!$("#mobile").val().match(/^(((13[0-9]{1})|159|153)+\d{8})$/)) { 
+        if (!$("#mobile").val().match(/^1[34578]{1}\d{9}$/)) { 
         alert("手机号码格式不正确！"); 
         //$("#moileMsg").html("<font color='red'>手机号码格式不正确！请重新输入！</font>"); 
         $("#mobile").focus(); 

@@ -92,6 +92,18 @@ class IndexController extends AppframeController {
                        
                         $this->get_coupon($app_str);
                     }
+                     elseif($app_str['busiid']=='A0014'){         //查券
+                       
+                        $this->turn_by_checkcoupon($app_str);
+                    }
+                    elseif($app_str['busiid']=='A0015'){         //是否允许充值
+                       
+                        $this->check_pay($app_str);
+                    }
+                    elseif($app_str['busiid']=='A0016'){         //检查版本号
+                       
+                        $this->check_version($app_str);
+                    }
 //                    elseif($app_str['busiid']=='A0008'){         //检查淘宝账号
 //                       
 //                        $this->check_tbuser($app_str);
@@ -391,13 +403,32 @@ class IndexController extends AppframeController {
        }
         
     }
-    
+    private function turn_by_checkcoupon($app_str){
+        $this->check_token($app_str);
+        $pid=$app_str['data']['pid'];
+        $auctionId=$app_str['data']['auctionId'];
+        $couponActivityId=$app_str['data']['couponActivityId'];
+        $str="https://uland.taobao.com/coupon/edetail?";
+        if($goods_info['couponActivityId']){
+                $str.="activityId=".$goods_info['couponActivityId'];
+            }
+            if($goods_info['auctionId']){
+                $str.="&itemId=".$goods_info['auctionId'];
+            }
+            if($pid){
+                $str.="&pid=".$pid;
+            }
+       $out_token=$this->turn_tao_str(array("data"=>array("title"=>$goods_info["title"],"url"=>$str)));
+        $out_short=$this->turn_short_str(array("data"=>array("url"=>$str)));
+        $this->output_data("0000","转链成功",array("shortLinkUrl"=>$out_short,"taoToken"=>$out_token,"clickUrl"=>$str));  
+    }
+
     private function turn_result($app_str){
         
         $this->check_token($app_str);
         $pid=$app_str['data']['pid'];
         $goods_id=$app_str['data']['goods_id'];
-        print_r($goods_id);
+//        print_r($goods_id);
         $model_goods = M('goods');
         if($goods_id){
             $where=" goods_id=".$goods_id;
@@ -405,13 +436,13 @@ class IndexController extends AppframeController {
         }
         if($goods_info['add_way']!=1){
             $str="https://uland.taobao.com/coupon/edetail?";
-            if($goods_info['couponactivityid']){
-                $str.="activityId=".$goods_info['couponactivityid'];
+            if($goods_info['couponActivityId']){
+                $str.="activityId=".$goods_info['couponActivityId'];
             }else{
                 $this->output_data("0010","获取商品优惠券失败");
             }
-            if($goods_info['auctionid']){
-                $str.="&itemId=".$goods_info['auctionid'];
+            if($goods_info['auctionId']){
+                $str.="&itemId=".$goods_info['auctionId'];
             }else{
                 $this->output_data("0010","获取商品ID失败");
             }
@@ -531,6 +562,7 @@ class IndexController extends AppframeController {
     private function register($app_str){
         $phonecod_mod=M("phonecod");
         $member_mod=M("member");
+        $memberacount_mod=M("member_acount");
         $code=$app_str['data']['code'];
         $phonenumber=$app_str['data']['phone'];
         $pass=$app_str['data']['pass'];
@@ -569,10 +601,15 @@ class IndexController extends AppframeController {
                 "user_status"=>1,
                 "up_level"=>$up_level,//上级
                 "up_totalagent"=>$up_totalagent,//上级总代
-                "spreading_code"=> md5($phonenumber . strval(time()) . strval(rand(0,999999)))
+                "spreading_code"=> md5($phonenumber . strval(time()) . strval(rand(0,999999))),
+                "member_type"=>1
             );
-            if($member_mod->add($data)){
-                $this->output_data("0000","注册成功");
+            if($mres=$member_mod->add($data)){
+                $acount_info=$memberacount_mod->where("member_name='$phonenumber'")->find();
+                if(!$acount_info){
+                    $memberacount_mod->add(array("member_name"=>$phonenumber));
+                }
+                $this->output_data("0000","注册成功",array("sign"=>$data['spreading_code']));
             }else{
                 $this->output_data("0010","注册失败，通讯故障");
             }
@@ -762,7 +799,28 @@ class IndexController extends AppframeController {
        
         
     }
- private   function trimall($str)//删除空格
+    private function check_pay($app_str){
+        
+            $phoneNum=$app_str['data']['phone'];
+           
+            $member_mod=M("member");
+            $member_info=$member_mod->where("user_login='".$phoneNum."'")->find();
+            if($member_info){
+                if($member_info['user_type']==2&&$member_info['end_time']>time()){
+                    $this->output_data("0010","用户已是年费会员");
+                    
+                }else{
+                    $this->output_data("0000","允许充值");
+                }
+                
+            }else{
+                $this->output_data("0010","用户不存在");
+               
+            }
+        
+    }
+
+    private   function trimall($str)//删除空格
 {
     $qian=array(" ","　","\t","\n","\r");$hou=array("","","","","");
     return str_replace($qian,$hou,$str);    

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html lang="zh"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>橙可优品-为淘客而生的移动APP！</title>
+    <link href="__TMPL__Public/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__TMPL__Public/css/taogou-min.css" rel="stylesheet">
+  
+    <style>
+        .emphasize-text{color: #ef8203;}
+        .tbk-row{max-width: 100%;margin-bottom:38px;}
+        .tbk-btn{width:60%;margin-top:12px;}
+        .alert-btn{width:48%;color:#ef8203;}
+        .modal{top:28%;}
+        .modal-footer{margin-top:0;}
+        a:hover, a:focus, a:visited ,.btn:hover, .btn:focus{color: #ef8203;}
+    </style>
+</head>
+<body id="download" class="has-footer">
+<div style="text-align:center;">
+    <img class="tbk-row" src="__TMPL__Public/images/register-head.png">
+    <!-- 没有分享人时，下面两个元素不展示，没有60元优惠券 -->
+    <img class="tbk-row" src="__TMPL__Public/images/register-coupon.png">
+    <div style="text-align:center;margin:10px;">
+        <span><span class="emphasize-text">60元充值优惠券</span>已存入</span><br>
+        <span>您 <span class="emphasize-text">{$member_info.user_login}</span> 账号中</span><br>
+        <span>赶紧<span class="emphasize-text">下载APP</span>免费体验吧~</span><br>
+    </div>
+    <div style="text-align:center;">
+        <a class="btn btn-warning tbk-btn" style="background-color:#ffffff;" href="http://a.app.qq.com/o/simple.jsp?pkgname=com.bkx.baikexing">
+            <span style="color:#ef8203;">下载橙可优品淘客APP</span>
+        </a>
+        <a class="btn btn-warning tbk-btn" data-toggle="modal" data-target="#tipModal">邀请好友赚180元推荐奖励</a>
+    </div>
+
+</div>
+
+<div class="modal fade" id="tipModal" tabindex="-1" role="dialog" aria-labelledby="tipModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal J_acXHRForm" role="form">
+                <div class="modal-body">
+                    <div class="" style="color:#ef8203;">
+                        <span>
+                            请先下载橙可优品淘客APP。<br>
+                            登录充值后，通过APP内的分享按钮每邀请一个好友完成充值，即可获得180元推荐奖励！<br>
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn alert-btn" href="http://a.app.qq.com/o/simple.jsp?pkgname=com.bkx.baikexing">下载APP</a>
+                    <span class="btn alert-btn" data-dismiss="modal">关闭</span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="__TMPL__Public/js/jquery.min.js"></script>
+<script src="__TMPL__Public/js/bootstrap.min.js"></script>
+<!--<script src="./finished_files/taogou-min.js.下载"></script>-->
+<div class="J_XHRDom"></div><div class="alert ac-alert alert-danger"><button type="button" class="close">×</button><h4 class="tit"></h4><p class="msg"></p></div>
+<!--<script language="JavaScript">
+    function ok(){
+        window.parent.parent.location.href="http://a.app.qq.com/o/simple.jsp?pkgname=com.bkx.baikexing";
+    }
+    window.setTimeout(ok, 3000);
+</script>-->
+
+
+
+</body></html>

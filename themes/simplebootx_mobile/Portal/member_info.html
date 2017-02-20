@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html lang="zh"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>橙可优品-为淘客而生的移动APP！</title>
+    <link href="__TMPL__Public/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__TMPL__Public/css/taogou-min.css" rel="stylesheet">
+   
+    <style>
+        body{ padding-top:0;}
+    </style>
+</head>
+
+
+
+<body id="account" class="has-footer">
+<style>
+    .right-text{margin-left: 18%;}
+</style>
+<div style="text-align:center;">
+    <img class="tbk-row" src="__TMPL__Public/images/account-head.png">
+</div>
+<div class="container-fluid" style="padding-top:18px;">
+    <form class="form-horizontal" role="form" method="post">
+        <div class="form-group">
+    <div class="col-sm-12">
+        <span class="control-label">账号：</span>
+        <span class="form-control-static">{$member_info.user_login}</span>
+        <span class="tbk-text pull-right" style="padding-right:16px;"><?php if($member_info['user_type']==1){echo"试用会员";} if($member_info['user_type']==2){echo"年费会员";}?>
+                </span>
+    </div>
+</div>
+<hr class="thin-line">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <span class="control-label">累计</span>
+            </div>
+        </div>
+
+        <hr class="thin-line">
+        <div class="form-group">
+            
+                                    <div class="col-sm-12">
+                <span class="form-control-static">邀请人数：{$invitation_num}</span>
+            </div>
+                        
+        </div>
+        <hr class="thin-line">
+        <div class="form-group">
+            
+                                    <div class="col-sm-12">
+                <span class="form-control-static">充值人数：{$cashier_num}</span>
+            </div>
+                        
+        </div>
+        <hr class="thin-line">
+        <div class="form-group">
+            
+            
+        </div>
+    </form>
+</div>
+
+
+<script>
+    var config = {
+
+    }
+</script>
+<script src="__TMPL__Public/js/jquery.min.js"></script>
+<script src="__TMPL__Public/js/bootstrap.min.js"></script>
+<div class="J_XHRDom"></div><div class="alert ac-alert alert-danger"><button type="button" class="close">×</button><h4 class="tit"></h4><p class="msg"></p></div>
+
+</body></html>
